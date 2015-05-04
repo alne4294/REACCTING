@@ -1,0 +1,26 @@
+<h1><span style="font-size: xx-large; color: #339966;">How to Run This App</span></h1>
+<h1><span style="font-size: x-large;">&nbsp;</span></h1>
+<p><span style="font-size: large;">The sourcecode for the app can be found <a href="https://github.com/alne4294/REACCTING" target="_blank">here</a>. &nbsp;Since it is private, you will need to be requested to be added as a collaborator.</span></p>
+<p><span style="font-size: large;">Issues with this app can be addressed to Alexia Newgord at alexia@alexianewgord.com.</span></p>
+<p>&nbsp;</p>
+<h2><span style="font-size: large;">Steps to run (from the server side)</span></h2>
+<hr />
+<p>&nbsp;</p>
+<ol>
+<li><span style="font-size: medium;">Install Mongo Database if you don't have it. &nbsp;See this installation directions <a href="http://docs.mongodb.org/manual/installation/" target="_blank">here</a>. &nbsp;This app was developed on version 2.6.7.</span></li>
+<li><span style="font-size: medium;">Import the PEMs data dump by running:</span>
+<pre><span style="font-size: medium;"><code>mongorestore --collection p1 --db pems PEMs_data/dump/pems/p1.bson</code></span></pre>
+</li>
+<li><span style="font-size: medium;">Start the MongoDB daemon with:</span>
+<pre><span style="font-size: medium;"><code>mongod</code></span></pre>
+</li>
+<li><span style="font-size: medium;">Make sure your machine has all of the requirements by running the following from the base folder of the app.&nbsp;</span>
+<pre><span style="font-size: medium;"><code>pip install -r requirements.txt</code></span></pre>
+</li>
+<li><span style="font-size: medium;">Run the application with:</span>
+<pre><span style="font-size: medium;"><code>python app.py</code></span></pre>
+</li>
+<li><span style="font-size: medium;">If there are errors, you may be missing some dependencies... go ahead and install those as well.</span></li>
+<li><span style="font-size: medium;">This app was developed using Python 2.7.6 and has only been tested with Firefox, Safari, and Chrome.</span></li>
+<li><span style="font-size: medium;">The password can be changed in the app.py file.</span></li>
+</ol>

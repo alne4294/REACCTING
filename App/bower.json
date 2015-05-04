@@ -1,0 +1,22 @@
+{
+  "name": "mongoApp",
+  "version": "0.0.0",
+  "authors": [
+    "alne4294 <alexiarose101@gmail.com>"
+  ],
+  "description": "App for accessing REACCTING Data",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "static/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.2.0",
+    "jquery": "2.1.1",
+    "d3": "3.4.11"
+  }
+}

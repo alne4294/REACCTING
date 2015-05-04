@@ -1,0 +1,160 @@
+html,  
+  body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      color:#fff;
+  }
+  #map { 
+      position:absolute; 
+      top:0; 
+      bottom:0; 
+      height: 100%;
+      width:100%; 
+  }
+
+  div.slider { width:600px; margin:10px 0; background-color:#ccc; height:10px; position: relative; }
+  div.slider div.handle { width:10px; height:20px; background-color:#00CCFF; cursor:move; position: absolute; }
+
+  svg {
+      position: relative;
+  }
+
+  .dateTimeBox {
+      position: absolute;
+      top: 140px;
+      left: 40px;
+      width: 240px;  
+  }
+
+  .pemsBox {
+      position: absolute;
+      top: 485px;
+      left: 40px;
+      width: 240px;
+  }
+
+  .pemsResultsBox {
+      position: absolute;
+      top: 300px;
+      left: 40px;
+      width: 240px;
+  }
+
+  .dataLabel {
+    font-size: 14px;
+  }
+
+  .locationLabel{
+    font-size: 16px;
+    position: absolute;
+    right: 0px;
+    padding-right: 5px;
+    padding-top:10px;
+  }
+
+
+  .dataPoint {
+    font-size: 14px;
+    position: absolute;
+    right: 0px;
+    padding-right: 5px;
+    padding-top:2px;
+  }
+
+  .dateTimeSlider {
+      position: absolute;
+      top: 10px;
+      left: 40px;
+      height: 120px;
+      width: 620px;
+  }
+
+  .selectorBox {
+      position: absolute;
+      top: 10px;
+      right: 50px;
+      height: 90px;
+      width: 165px;
+      font-size: 13px;
+  }
+
+  .popup {
+      position: relative;
+      top: 50%;
+      bottom: 0;
+      height: auto;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+      color: #333333;
+      width: 60%%;
+      z-index: 10;
+      display:none;
+  }
+
+  div.submitWrapper  {
+     text-align: center;  
+     color:black;  
+  } 
+
+  .header {
+    font-size: 28px;
+  }
+  .areaChart {
+      position: absolute;
+      bottom: 0;
+      background: #000;
+  }
+
+  .axis path,
+  .axis line {
+        fill: none;
+        stroke: #FFF;
+        shape-rendering: crispEdges;
+        stroke-width:1;
+  }
+  .axis text {
+    stroke:white;
+  }
+  .box {
+    background:rgba(0, 0, 0, 0.61);
+    padding: 10px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    display:none;
+  }
+
+  .time {
+    font-size: 3em;
+  }
+  .readableTime {
+    position: relative;
+    top: -5px;
+  }
+  .date {
+    font-size: 22px;
+  }
+
+  .errorMessage {
+    color: red;
+  }
+
+  .leaflet-popup-content {
+    font: 12px/1.4 "Helvetica Neue", Arial, Helvetica, sans-serif;
+    color:#000000;
+  }
+
+  .awesome-marker i {
+        font-size: 22px;
+        margin-top: 8px;
+  }
+
+  .fa-stop {
+    color: red;
+  }
+
+  .fa-play {
+    color: green;
+  }

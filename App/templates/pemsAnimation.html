@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+    <title>REACCTING PEMs Dashboard</title>
+
+    <script src="static/scriptaculous-js-1.9.0/lib/prototype.js" type="text/javascript"></script>
+    <script src="static/scriptaculous-js-1.9.0/src/scriptaculous.js" type="text/javascript"></script>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="static/css/leaflet.awesome-markers.css">
+    <link rel="stylesheet" type="text/css" href="static/css/pemsAnimationStyle.css">
+
+</head>
+
+<body>
+
+<script src='static/bower_components/jquery/dist/jquery.min.js'></script>
+<script>var $j=jQuery.noConflict();</script>
+<script src='static/bower_components/d3/d3.min.js'></script>
+<script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
+<script src="http://maps.google.com/maps/api/js?v=3&sensor=false"></script>
+<script src="static/Google.js"></script>
+<script src="static/leaflet.awesome-markers.js"></script>
+
+<div id='map'></div>
+
+<div class="dateTimeSlider box" style="display: block;">
+    <div class = "header"><i class=" fa fa-dashboard"></i> REACCTING PEMs Dashboard <button type="button" class="btn btn-default btn-xs about" style="float:right;"> <i class=" fa fa-info"></i> </button></div>
+    <div class = "sliderLabel">Slide to adjust time</div>
+    <div id="zoom_slider" class="slider">
+      <div class="handle"></div>
+    </div>
+    <div id="zoom_element"></div>
+</div>
+
+<div class = "pemsBox box" style="display: block;">
+	 <div class = "header"> Emissions </div>
+	<div class="dataLabel"> Predicted NO: <span class = "nodata dataPoint" ></span> </div>
+	<div class="dataLabel"> Predicted NO2: <span class = "no2data dataPoint"></span> </div>
+	<div class="dataLabel"> Predicted CO: <span class = "codata dataPoint"></span> </div>
+	<div class="dataLabel"> Predicted CO2: <span class = "co2data dataPoint"></span> </div>
+	<div class="dataLabel"> Predicted COZIR: <span class = "cozirdata dataPoint"></span> </div>
+	<div class="dataLabel"> Predicted VOC: <span class = "vocdata dataPoint"></span> </div>
+</div>
+
+<div class = "pemsResultsBox box" style="display: block;">
+	<div class = "header"> Results <span class = "emissionLocation locationLabel" ></span></div>
+	<div class="dataLabel"> NO: <span class = "nodataResult dataPoint" ></span> </div>
+	<div class="dataLabel"> NO2: <span class = "no2dataResult dataPoint"></span> </div>
+	<div class="dataLabel"> CO: <span class = "codataResult dataPoint"></span> </div>
+	<div class="dataLabel"> CO2: <span class = "co2dataResult dataPoint"></span> </div>
+	<div class="dataLabel"> VOC: <span class = "vocdataResult dataPoint"></span> </div>
+	<div class="dataLabel"> MCE: <span class = "mcedataResult dataPoint"></span> </div>
+</div>
+
+<div class="selectorBox box" style="display: block;">
+    <input type="checkbox" name="untestedHouseholds" id="untestedHouseholds" href="#" checked> Untested Households<br>
+    <input type="checkbox" name="testHouseholds" id="testHouseholds" href="#" checked> Tested Households<br>
+    <div><span class = "errorMessage"></span></div>
+</div>
+
+<div class="dateTimeBox box" style="display: block;">
+    <div class = "date"></div> 
+    <div class = "time"><span class = "readableTime"></span></div> 
+    <div class= "controls">
+        <button type="button" class="btn btn-default btn-xs slower"><i class=" fa fa-backward"></i> Slower</button>
+        <button type="button" class="btn btn-default btn-xs play"><i class=" fa fa-play"></i></button>
+        <button type="button" class="btn btn-default btn-xs stop"><i class=" fa fa-stop"></i></button>   
+        <button type="button" class="btn btn-default btn-xs faster">Faster <i class=" fa fa-forward"></i></button>   
+    </div>
+    <div>Time Factor: <span class = "timeFactor"></span>x</div>
+</div>
+
+<div class = 'container popup aboutPopup'>
+  <div class="panel panel-primary">
+  <div class="panel-heading">
+    <h3 class="panel-title">About <button type="button" class="btn btn-default btn-xs close"><i class=" fa fa-times"></i></button></h3>
+  </div>
+  <div class="panel-body">
+      <strong><p>REACCTING: Emissions Data Visualization </p></strong>
+
+      <p>
+        This data is collected and analyzed by the <a href = "http://www.reaccting.com/">REACCTING</a> research group.
+      </p>
+      <p>
+        <span><strong>Summary of REACCTING Research Objectives: &nbsp;</strong>&nbsp;</span><br>
+        <span style="font-size:x-small"><strong>R</strong>easearch of <strong>E</strong>missions, <strong>A</strong>ir Quality, <strong>C</strong>limate, and <strong>C</strong>ooking <strong>T</strong>echnologies <strong>I</strong>n <strong>N</strong>orthern <strong>G</strong>hana</span>
+      </p>
+      <p>
+        According to recent reports, nearly three billion people in the developing world cook food and heat their homes with open fires or cookstoves that are fueled by solid biofuels. The smoke exposure from these activities is estimated to lead to approximately four million premature deaths each year. The emissions from these processes also add significantly to global emissions of greenhouse gases, short-lived climate forcing agents, and air pollutants. However, emission estimates from these processes, and their atmospheric impacts, are still highly uncertain. Furthermore, stove technologies exist that enable reductions in the amount of fuel used for cooking, and in emissions. Yet, the extent to which these technologies will be utilized, change emissions, and impact health and atmospheric composition is unclear.
+      </p>
+  </div>
+</div>
+
+<script>
+
+//================================================================================================================
+// custom javascript
+//================================================================================================================
+
+  //STARTING POINT, will run after DOM loads
+  $j(function() {
+    //retrieve PEMs-specific household data
+    getPemsHouseholdData();
+    //retrieve the data for the households
+    getHouseholdData();
+    //find() pems data and generate animation
+    getPemsData();
+  });
+
+  //========================================================
+  var j = 0;
+
+  var householdIndexDict = {};
+
+  function getPemsData(){
+    d3.json("/api/1.0/mongoWebApp/find", function( returnedTextRows ) {
+      // returnedTextRows.data is an array of objects, where each obj is a csv row
+      var records = [];
+
+      var previousDate = "";
+
+      for ( var i = 0; i < returnedTextRows.data.length; i++ ) {
+        //Convert into an array of dicts, here's our chance to clean
+        var record = JSON.parse( returnedTextRows.data[i] );
+        records.push(record);
+
+        var dateOnly = (record.date).split(" ")[0];
+        if (dateOnly != previousDate){
+          householdIndexDict[dateOnly] = i;
+          previousDate = dateOnly;
+        }
+      }
+
+      // console.log("householdIndexDict");
+      // console.log(householdIndexDict);
+
+      // For now, average is just the coordinates of the center of Nvrango
+      var latAvg = 10.8847;
+      var lonAvg = -1.0903;
+
+      // Call from here to avoid asynchronous behavior
+      animatePemsData(records, latAvg, lonAvg);
+    });
+  }
+
+  //========================================================
+  var pemsHouseholdData;
+  var testHouseholdLayer;
+  var householdTestDateDict = {};
+
+  function getPemsHouseholdData(){
+    //Create a dictionary so we know which record is associated with which household
+
+    d3.json("/api/1.0/mongoWebApp/getPemsHouseholdData", function( returnedTextRows ) {
+      // returnedTextRows.data is an array of objects, where each obj is a csv row
+      pemsHouseholdData = returnedTextRows.data;
+
+      //Create dictionary that will give us the date that a household was tested on
+      for(var testDate in pemsHouseholdData){
+        householdTestDateDict[pemsHouseholdData[testDate].location.replace(/\s+/g, '')] = testDate;
+      }
+
+      // console.log(householdTestDateDict);
+
+    });
+  }
+
+  //========================================================
+  var untestedHouseholdLayer;
+  var testHouseholdLayer;
+  var householdCoordDict = {};
+
+  var householdMarker = L.AwesomeMarkers.icon({
+    icon: 'home', 
+    markerColor: 'blue',
+    prefix: 'fa', 
+    iconColor: 'white'
+  });
+
+  var testHouseholdMarker = L.AwesomeMarkers.icon({
+    icon: 'home', 
+    markerColor: 'orange',
+    prefix: 'fa', 
+    iconColor: 'white'
+  });
+
+  var nrcMarker = L.AwesomeMarkers.icon({
+    icon: 'building', 
+    markerColor: 'green',
+    prefix: 'fa', 
+    iconColor: 'white'
+  });
+
+  var navrongoCounter = 0;
+
+  function getHouseholdData(){
+    //Define the household layer
+
+    function onClick(e) {
+        if(!this.options.date){
+          // console.log("Navrongo Research Center");
+          // console.log(this.options.date2);
+          j = householdIndexDict[this.options.date2];
+          // console.log(j);
+        } else{
+          // console.log(householdIndexDict[this.options.date]);
+          j = householdIndexDict[this.options.date];
+        }
+    }  
+
+    d3.json("/api/1.0/mongoWebApp/getHouseholdData", function( returnedTextRows ) {
+      
+      //returnedTextRows.data is an array of objects, where each obj is a csv row
+      var dataObjs = returnedTextRows.data;
+      var markerArray = [];
+      var testMarkerArray = [];
+
+      for ( var i = 0; i < dataObjs.length; i++ ) {
+        //Add each marker to the map layer
+        var household = dataObjs[i];
+        //Build the householdCoordDict lookup dictionary
+        householdCoordDict[household.locationid] = [household.latitude, household.longitude];
+
+        var lat = Number(household.latitude);
+        var lon = Number(household.longitude);
+
+        if(household.locationid in householdTestDateDict){
+
+          var date = householdTestDateDict[household.locationid];
+          var dateOnly = date.split("T")[0];
+          marker = L.marker([lat, lon], {icon: testHouseholdMarker, 'date': dateOnly}).on('click', onClick).bindPopup(
+             "<strong>Name </strong>" + household.househnam + "<br>"
+             + "<strong>HH_ID </strong>" + household.hhid + "<br>"
+             + "<strong>Loc_ID </strong>" + household.locationid + "<br>"
+             + "<strong>Size </strong>" + household.hhsize + "<br>"
+             + "<strong>Choice </strong>" + household.choiceversion);
+          testMarkerArray.push(marker)
+        } else{
+          marker = L.marker([lat, lon], {icon: householdMarker, location: household.locationid}).bindPopup(
+             "<strong>Name </strong>" + household.househnam + "<br>"
+             + "<strong>HH_ID </strong>" + household.hhid + "<br>"
+             + "<strong>Loc_ID </strong>" + household.locationid + "<br>"
+             + "<strong>Size </strong>" + household.hhsize + "<br>"
+             + "<strong>Choice </strong>" + household.choiceversion);
+
+          markerArray.push(marker);  
+        }
+      }
+
+      //Add marker and info for Navgrongo Research Center
+      marker = L.marker([10.88169,-1.087655], {icon: nrcMarker, 'date0': '2014-01-04', 'date1': '2014-05-31', 'date2':'2015-01-04', 'date3': '2014-01-05'}).on('click', onClick).bindPopup(
+        "<strong>Navrongo Research Center</strong>");
+      testMarkerArray.push(marker);
+      householdCoordDict["Navrongo"] = [10.88169,-1.087655];
+
+      untestedHouseholdLayer = L.layerGroup(markerArray);
+      testHouseholdLayer = L.layerGroup(testMarkerArray);
+    });
+  }
+
+  function animatePemsData(records, latAvg, lonAvg){
+    // add a Google Maps tile layer
+    var zoomLevel = 11; //higher zoom gets closer in
+    var map = new L.Map('map', {center: new L.LatLng(latAvg, lonAvg), zoom: zoomLevel});
+    var osm = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+    var ggl = new L.Google();
+    var ggl2 = new L.Google('TERRAIN');
+    map.addLayer(ggl);
+    map.addControl(new L.Control.Layers( {'OSM':osm, 'Google':ggl, 'Google Terrain':ggl2}, {}));
+    map.addLayer(untestedHouseholdLayer); 
+    map.addLayer(testHouseholdLayer);
+
+
+    //=========================================================================
+    //figure out the points we are going to iterate through
+
+    var start = [0,0];
+    var timeFactor = 8;
+    $j('.timeFactor').text(timeFactor); //Displays the timeFactor in the UI.
+    var pace = 30; //Higher number is a slower pace
+
+
+    //=========================================================================
+    // Create a counter with a value of 0.
+    // var j = 0;
+    var numCoordinates = records.length;
+
+    var testingMarkerStyle = L.AwesomeMarkers.icon({
+      icon: 'fire', 
+      markerColor: 'red',
+      prefix: 'fa', 
+      iconColor: 'white'
+    });
+
+    var testingMarker = L.marker([0,0], {icon: testingMarkerStyle}).addTo(map)
+      .bindPopup('Testing Household: ');
+
+    var circle = L.circle([0,0], 1100, {
+        fill: true,
+        color: 'gold',
+        fillColor: 'yellow',
+        fillOpacity: 0.1
+    }).addTo(map);
+
+    //=========================================================================
+    //slider
+    var zoom_slider = $('zoom_slider');
+    var sliderHandle;
+
+    (function() {
+      sliderHandle = new Control.Slider(zoom_slider.down('.handle'), zoom_slider, {
+        range: $R(0, numCoordinates),
+        sliderValue: 0,
+        onSlide: function(value) {
+          j = parseInt(value);
+          updateGraph();
+          updateTimer();
+          updateHouseholdMarkers();
+        },
+        onChange: function(value) { 
+          j = parseInt(value);
+          updateGraph();
+          updateTimer();
+          updateHouseholdMarkers();
+        }
+      });
+    })();
+
+    //=========================================================================
+    //let's map!
+
+    var delay = 0; //Will pause execution if set to !0
+    var timeoutHandle; //Responsible for delaying execution
+    tick();
+
+    function tick() {
+        updateHouseholdMarkers();
+        sliderHandle.setValue(j);
+        timeoutHandle = setTimeout( function() {
+          updateTimer();
+          // Move to the next point of the line
+          // until `j` reaches the length of the array.
+          if ((j+=timeFactor) < numCoordinates) setTimeout(tick, (1000/timeFactor));
+        }, delay);
+    }
+
+    function updateGraph(){
+      // Change the Graph to reflect the data at the current time
+      no2data = records[j].predicted_NO2.toFixed(4);
+      nodata = records[j].predicted_NO.toFixed(4);
+	  	codata = records[j].predicted_CO.toFixed(4);
+	    co2data = records[j].predicted_CO2.toFixed(4);
+	    cozirdata = records[j].predicted_COZIR.toFixed(4);
+	    vocdata = records[j].predicted_VOC.toFixed(4);
+	    
+	    (no2data >= 0) ? $j('.no2data').html(no2data.toString() + " ppb") : $j('.no2data').html("");
+	    (nodata >= 0) ? $j('.nodata').html(nodata.toString() + " ppb") : $j('.nodata').html("");
+	    (codata >= 0) ? $j('.codata').html(codata.toString() + " ppm") : $j('.codata').html(""); 
+	    (co2data >= 0) ? $j('.co2data').html(co2data.toString() + " ppm") : $j('.co2data').html(""); 
+	    (cozirdata >= 0) ? $j('.cozirdata').html(cozirdata.toString() + " ppm") : $j('.cozirdata').html(""); 
+	    (vocdata >= 0) ? $j('.vocdata').html(vocdata.toString() + " ppm") : $j('.vocdata').html(""); 
+    }
+
+    function updatePemsResults(pemsDataObj, location){
+        // Change the Graph to reflect the data at the current time
+	no2data = pemsDataObj.NO2EF.toString() + " g/(kg fuel)";
+    nodata = pemsDataObj.NOEF.toString() + " g/(kg fuel)";
+	codata = pemsDataObj.COEF.toString() + " g/(kg fuel)";
+	co2data = pemsDataObj.CO2EF.toString() + " g/(kg fuel)";
+	vocdata = pemsDataObj.VOCEF.toString() + " g/(kg fuel)";
+        mcedata = (pemsDataObj.MCE.toFixed(4) * 100).toString() + "%"
+        emissionLocation = location;
+	    $j('.no2dataResult').html(no2data); 
+	    $j('.nodataResult').html(nodata); 
+	    $j('.codataResult').html(codata); 
+	    $j('.co2dataResult').html(co2data); 
+	    $j('.vocdataResult').html(vocdata); 
+            $j('.mcedataResult').html(mcedata); 
+            $j('.emissionLocation').html(emissionLocation);
+    }
+
+    function updateHouseholdMarkers(){
+        // Create a marker to visually show which household is currently being tested
+        var item = records[j];
+        if ( !item ) return;
+        var datetime = item.date.split(" ");
+        dateOnly = datetime[0];
+        var date = dateOnly.concat("T00:00:00")
+        
+        if( date in pemsHouseholdData ) {
+          var location = pemsHouseholdData[date].location;
+          //Remove spaces from location name
+          location = location.replace(/\s+/g, '');
+
+          updateGraph();
+          updatePemsResults(pemsHouseholdData[date],location);
+
+          if( location in householdCoordDict ){
+            var coordinates = householdCoordDict[location];
+            //Move testingMarker and polygon to this location
+            testingMarker.setLatLng(L.latLng(coordinates[0], coordinates[1]));
+            testingMarker.bindPopup("Testing household: " + String(location));
+            circle.setLatLng(L.latLng(coordinates[0], coordinates[1]));
+            //Remove error message if exists
+            $j('.errorMessage').html(" ");
+          } else {
+            //Move testingMarker out of view and add error message
+            testingMarker.setLatLng(L.latLng(0, 0));
+            circle.setLatLng(L.latLng(0, 0));
+            $j('.errorMessage').html("No coordinate data found for: " + String(location));
+          }
+        } else {
+          //Move testingMarker out of view and add error message
+          testingMarker.setLatLng( L.latLng( 0, 0 ) );
+          circle.setLatLng( L.latLng( 0, 0 ) );
+          $j('.errorMessage').html( "No household data found for: " + String( dateOnly ) );
+        }
+    }
+
+    function updateTimer() {
+    	var item = records[j];
+        if ( !item ) return;
+
+        var datetime = item.date.split(" ");
+        $j('.readableTime').text(datetime[0]);
+        $j('.date').text(datetime[1]);
+    }
+
+
+    //=========================================================================
+    //listeners 
+
+    $j('.slower').click(function(){
+        if(timeFactor > 1){
+            timeFactor = (timeFactor/2);  
+        };
+        $j('.timeFactor').html(timeFactor);
+    });
+
+    $j('.faster').click(function(){
+        timeFactor = (timeFactor * 2);
+        $j('.timeFactor').html(timeFactor);
+    });
+
+    $j('.play').click(function(){
+        delay = 0; //Resume execution
+        if(timeoutHandle){
+          clearTimeout(timeoutHandle);
+          timeoutHandle = null;
+        }
+        tick();
+
+        console.log("play ==============");
+        console.log(delay);
+        console.log(timeoutHandle);
+    });
+
+    $j('.stop').click(function(){
+        delay = 49999861776383; //Maximum allowable delay
+        console.log("stop ==============");
+    });
+
+    $j('.about').click(function(){
+      $j('.aboutPopup').fadeIn();
+    });
+
+    $j('.aboutPopup .close').click(function(){
+      $j('.aboutPopup').fadeOut();
+    });
+
+    //household info
+    $j("#untestedHouseholds").change(function(event) {
+
+      event.preventDefault();
+
+      if(map.hasLayer(untestedHouseholdLayer)) {
+          $j(this).removeClass('selected');
+          map.removeLayer(untestedHouseholdLayer);
+      } else {
+          map.addLayer(untestedHouseholdLayer);        
+          $j(this).addClass('selected');
+      }
+    });
+
+        //household info
+    $j("#testHouseholds").change(function(event) {
+
+      event.preventDefault();
+
+      if(map.hasLayer(testHouseholdLayer)) {
+          $j(this).removeClass('selected');
+          map.removeLayer(testHouseholdLayer);
+      } else {
+          map.addLayer(testHouseholdLayer);        
+          $j(this).addClass('selected');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+<h1><span style="font-size: xx-large; color: #800080;">About the Data Used for this App</span></h1>
+<p>&nbsp;</p>
+<p><span style="font-size: large;">The sourcecode for the app can be found on <a href="https://github.com/alne4294/REACCTING" target="_blank">Github</a>. &nbsp;Since it is a private repository, you will need to be requested to be added as a collaborator.</span></p>
+<p><span style="font-size: large;">Issues with this app can be addressed to Alexia Newgord at alexia@alexianewgord.com.</span></p>
+<p><span style="font-size: large;">When replacing or adding to any of the datasets, it is critical to maintain the same relative paths.  In other words, put the new file(s) in the same location as the old file(s) so that the application knows where to find it.</span></p>
+<p>&nbsp;</p>
+<h2><span style="font-size: large;">PEMs</span></h2>
+<hr />
+<p><span style="font-size: large;"><span style="font-size: medium;">Original format: Matlab</span><br /></span></p>
+<p><span style="font-size: medium;">Steps to import:</span></p>
+<ol>
+<li><span style="font-size: medium;">Pull the needed files from box.net</span></li>
+<li><span style="font-size: medium;">Convert using Convert_Mat_2_CSV.m, which creates Matlab and CSV copies with the correct date formatting</span></li>
+<li><span style="font-size: medium;">Import into MongoDB with import_pems.rb (which is ran using run_import_pems.sh)</span></li>
+<li><span style="font-size: medium;">To share this database, replace the existing compressed database with a new .bson compression.  Details on how to use mongodump to do this can be found <a href="http://docs.mongodb.org/manual/tutorial/backup-with-mongodump/" target="_blank">here</a>.</span></li>
+</ol>
+<p>&nbsp;</p>
+<h2><span style="font-size: large;">Household Coordinates</span></h2>
+<hr />
+<p><span style="font-size: large;"><span style="font-size: medium;">Original format: CSV</span><br /></span></p>
+<p><span style="font-size: medium;">Steps to import:</span></p>
+<ol>
+<li><span style="font-size: medium;"><span style="font-size: medium;">Copy of file currently exists in repository as householdsamplelatlong.csv</span></span></li>
+<li><span style="font-size: medium;"><span style="font-size: medium;">Convert to JSON using the <a href="http://www.convertcsv.com/json-to-csv.htm" target="_blank">JSON to CSV converter</a>. &nbsp;All values should be wrapped in double quotes and the new file should be named householdData.json</span></span></li>
+</ol>
+<p>&nbsp;</p>
+<h2><span style="font-size: large;">PEMs Comparison Info</span></h2>
+<hr />
+<p><span style="font-size: medium;">Original format: XLSX<br /></span></p>
+<p><span style="font-size: medium;">Steps to import:</span></p>
+<ol>
+<li><span style="font-size: medium;">None. &nbsp;However the location, formatting, and name of this file must stay the same to be correctly parsed (ComparingAcrossStovesAndSeasons.xlsx)</span></li>
+</ol>
+<p>&nbsp;</p>
+<h2><span style="font-size: large;">GPS Data</span></h2>
+<hr />
+<p><span style="font-size: medium;">Original format: CSV</span></p>
+<p><span style="font-size: medium;">Steps to import:</span></p>
+<ol>
+<li><span style="font-size: medium;">Get the CSV files from Dropbox</span></li>
+<li><span style="font-size: medium;">Hand clean any clearly duplicated data entries or entries that seem really off (for example, records in Boulder CO or with other clearly incorrect longs and lats). &nbsp;The app with do further cleaning, but it is best not to send an excessive amount of invalid data over the network.</span></li>
+<li><span style="font-size: medium;">Convert to JSON using the&nbsp;<a href="http://www.convertcsv.com/json-to-csv.htm" target="_blank">JSON to CSV converter</a><span style="font-size: medium;">. All fields should be wrapped in double quotes and the filename should be Phone1.json or Phone2.json respectively. Note: the app currently only supports two phones.</span></span></li>
+</ol>
