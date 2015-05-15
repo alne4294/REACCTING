@@ -6,7 +6,16 @@ The prezi presentation included this repository shows the process that went into
 
 ## Steps to run this application on your local machine
 
-#### 1. Set up the Mongo Database
+#### 1. Pull down the code/application from git
+
+* Install git and create an account if you haven't already
+* Ask Alexia to be added as a "collaborator" if you're not one yet (since the project is private)
+* Run the following in the directory that you want the project to be stored:
+```
+git clone https://github.com/alne4294/REACCTING.git"
+```
+
+#### 2. Set up the Mongo Database
 
 * Install Mongo Database if you don't have it.  See this installation directions here.  This app was developed on version 2.6.7.
 * Import the PEMs data dump by running:
@@ -19,7 +28,7 @@ It's less than a gig and should have 6343 records.
 mongod
 ```
 
-#### 2. Check Python Requirements
+#### 3. Check Python Requirements
 
 * Make sure your machine has all of the requirements by running the following from the base folder of the app. 
 ```
@@ -28,7 +37,7 @@ pip install -r requirements.txt
 If there are errors, you may be missing some dependencies... go ahead and install those as well.
 This app was developed using Python 2.7.6 and has only been tested with Firefox, Safari, and Chrome.
 
-#### 3. Run
+#### 4. Run
 
 * Run the application with:
 ```
@@ -41,9 +50,13 @@ python app.py
 
 * It may ask for authentication, and the username and password can be found in the code in app.py.
 
-#### 4. Debug?
+#### 5. Debug?
 
 * If there are issues, check for error messages in your terminal and browser console (by using inspector or other tool)
+
+#### 6. Improve
+
+* Create issues [here](https://github.com/alne4294/REACCTING/issues) for problems or features that can/should be added OR add them yourself and push
 
 
 
