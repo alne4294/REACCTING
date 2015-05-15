@@ -14,6 +14,10 @@ The prezi presentation included this repository shows the process that went into
 ```
 git clone https://github.com/alne4294/REACCTING.git"
 ```
+* To update your current application, run:
+```
+git pull origin master
+```
 
 #### 2. Set up the Mongo Database
 
@@ -56,8 +60,14 @@ python app.py
 
 #### 6. Improve
 
-* Create issues [here](https://github.com/alne4294/REACCTING/issues) for problems or features that can/should be added OR add them yourself and push
-
+* Create issues [here](https://github.com/alne4294/REACCTING/issues) for problems or features that can/should be added 
+* OR add them yourself.  If you are confident in your changes, pull the latest changes with "git pull origin master" and then push your changes to the online repository with the following commands:
+```
+git add *
+git commit -m "I modified this part because..."
+git push origin master
+```
+Please be verbose with your commit message and, ideally, make your own issue and resolve it :)
 
 
 
